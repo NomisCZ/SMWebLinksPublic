@@ -53,7 +53,10 @@ class Handler extends ExceptionHandler
             }
         }
 
-        return parent::render($request, $e);
-
+        if (env('APP_DEBUG')) {
+            return parent::render($request, $e);
+        } else {
+            return response(view("errors.500"), 500);
+        }
     }
 }

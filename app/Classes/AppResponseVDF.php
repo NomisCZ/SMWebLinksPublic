@@ -4,23 +4,23 @@ namespace App\Classes;
 
 use App;
 use Response;
+use Illuminate\Support\Facades\Request;
 
 class AppResponseVDF
 {
-
     /**
      * @param $responseData
      */
-    public static function sendError($responseData) {
-
+    public static function sendError($responseData)
+    {
         self::sendResponse($responseData, 'error');
     }
 
     /**
      * @param $responseData
      */
-    public static function sendSuccess($responseData) {
-
+    public static function sendSuccess($responseData)
+    {
         self::sendResponse($responseData, 'success');
     }
 
@@ -28,8 +28,8 @@ class AppResponseVDF
      * @param $responseData
      * @param $responseStatus
      */
-    private static function sendResponse($responseData, $responseStatus) {
-
+    private static function sendResponse($responseData, $responseStatus)
+    {
         $responseData['response_type'] = 'VDF';
 
         response(
@@ -37,12 +37,12 @@ class AppResponseVDF
                 'response' => [
                     $responseStatus => $responseData,
                     'client' => [
-                        'ip_address' => \Request::ip(),
-                        'request' => \Request::url()
+                        'ip_address' => Request::ip(),
+                        'request' => Request::url()
                     ],
                     'app' => [
-                        'name' => env('APP_NAME'),
-                        'version' => env('APP_VERSION')
+                        'name' => config('app.name'),
+                        'version' => config('app.version')
                     ]
                 ]
             ], true), $responseData['code'], ['Content-Type' => 'text/plain'])->send();
@@ -53,8 +53,8 @@ class AppResponseVDF
      * @param $text
      * @return array|null
      */
-    public static function vdf_decode($text) {
-
+    public static function vdf_decode($text)
+    {
         if(!is_string($text)) {
             trigger_error("vdf_decode expects parameter 1 to be a string, " . gettype($text) . " given.", E_USER_NOTICE);
             return NULL;
@@ -154,8 +154,8 @@ class AppResponseVDF
      * @param $level
      * @return null|string
      */
-    private static function vdf_encode_step($arr, $pretty, $level) {
-
+    private static function vdf_encode_step($arr, $pretty, $level)
+    {
         if(!is_array($arr)) {
             return null;
         }

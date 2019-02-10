@@ -19,7 +19,6 @@ class ApiCheckAgent
      */
     public function handle($request, Closure $next, $type = null)
     {
-
         $userAgent = new AppUserAgent();
 
         if (is_null($type)) {
@@ -35,7 +34,7 @@ class ApiCheckAgent
 
         } else if (!$userAgent->isValveInGameBrowser()) {
 
-            throw new UnauthorizedHttpException(null);
+            throw new UnauthorizedHttpException('Unauthorized');
         }
 
         return $next($request);

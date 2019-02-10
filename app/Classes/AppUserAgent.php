@@ -5,21 +5,21 @@ namespace App\Classes;
 use App;
 use Illuminate\Support\Facades\Request;
 
-class AppUserAgent {
-
+class AppUserAgent
+{
     private $userAgent;
     private $userAgentData;
 
-    private $allowedSteamApps = array('730', '240', '4000', '500', '550', '440');
+    private $allowedSteamApps = ['730', '240', '4000', '500', '550', '440'];
 
-    public function __construct() {
-
+    public function __construct()
+    {
         $this->userAgent = Request::header('User-Agent');
         $this->parseUserAgent();
     }
 
-    private function parseUserAgent() {
-
+    private function parseUserAgent()
+    {
         $pattern = '/(^\s*\()|(\)\s*$)/';
 
         $parts = explode(" ", $this->userAgent);
@@ -32,14 +32,13 @@ class AppUserAgent {
         );
     }
 
-    public function isValveClient() {
-
+    public function isValveClient()
+    {
         return (in_array($this->userAgentData['version'], $this->allowedSteamApps));
     }
 
-    public function isValveInGameBrowser() {
-
-        return (preg_match("/Valve Client/", $this->userAgent));
+    public function isValveInGameBrowser()
+    {
+        return (preg_match("/Valve Client/", $this->userAgent) || preg_match("/Valve Steam GameOverlay/", $this->userAgent));
     }
-
 }

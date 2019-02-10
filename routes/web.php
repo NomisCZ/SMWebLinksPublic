@@ -11,43 +11,82 @@
 |
 */
 
-$app->get('/', [ 'as' => 'home', function () use ($app) {
+$router->get('/', ['as' => 'index', 'uses' => 'PageController@index']);
 
-    return view('errors.403');
-}]);
-
-$app->group([
+$router->group([
     'as'     => 'error',
     'prefix' => 'error',
     'middleware' => ['throttle:20,4']
-], function () use ($app) {
+], function () use ($router) {
 
-    $app->get('failed', [
+    $router->get('failed', [
         'as' => 'failed', 'uses' => 'PageController@errorFailed'
     ]);
 
-    $app->get('not-available', [
+    $router->get('not-available', [
         'as' => 'not-available', 'uses' => 'PageController@errorNotAvailable'
+    ]);
+
+    $router->get('login-canceled', [
+        'as' => 'login-canceled', 'uses' => 'PageController@errorLoginCanceled'
     ]);
 });
 
-$app->group([
-        'middleware' => ['throttle:20,4', 'api.agent:internal']
-], function () use ($app) {
+// => Auth
+$router->group([
+    'as'     => 'auth',
+    'prefix' => 'auth',
+    'middleware' => ['throttle:5', 'api.agent:internal']
+], function () use ($router) {
 
-    $app->get('to/{steamId}', [
+    $router->get('logout', [
+        'as' => 'logout', 'uses' => 'PageController@logout'
+    ]);
+
+    $router->get('provider/steam', [
+        'as' => 'provider.steam', 'uses' => 'Auth\SteamController@login'
+    ]);
+});
+
+$router->group([
+        'middleware' => ['throttle:20', 'api.agent:internal']
+], function () use ($router) {
+
+    /**
+     * @deprecated Redirect for old plugin version
+     */
+    $router->get('to/{steamId:[0-9]{17}}', [
         'as' => 'web.redirect.to', 'uses' => 'WebController@redirectTo'
     ]);
 
-});
-
-$app->group([
-        'prefix' => 'api/v1',
-        'middleware' => ['throttle:30,1', 'api.agent']
-    ], function () use ($app) {
-
-    $app->get('redirect/{steamId}/{playerIp}', [
-        'as' => 'api.request', 'uses' => 'ApiController@redirectRequest'
+    $router->get('method/{fetchMethod:ip|steamid}', [
+        'as' => 'web.redirect.method', 'uses' => 'WebController@redirectMethod'
     ]);
 
+    $router->get('method/{fetchMethod:steamid}/{steamId:[0-9]{17}}', [
+        'as' => 'web.redirect.method.steamId', 'uses' => 'WebController@redirectMethod'
+    ]);
+});
+
+/**
+ * @deprecated Api for old plugin version
+ */
+$router->group([
+    'prefix' => 'api/v1',
+    'middleware' => ['throttle:60', 'api.agent']
+], function () use ($router) {
+
+    $router->get('redirect/{steamId}/{playerIp}', [
+        'as' => 'api.request', 'uses' => 'ApiController@redirectRequest'
+    ]);
+});
+
+$router->group([
+    'prefix' => 'api/v2',
+    'middleware' => ['throttle:60', 'api.agent']
+], function () use ($router) {
+
+    $router->post('request/create', [
+        'as' => 'api.request.create', 'uses' => 'Api\ApiV2Controller@createRequest'
+    ]);
 });

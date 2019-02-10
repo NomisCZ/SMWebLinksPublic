@@ -1,12 +1,21 @@
 @extends('layouts.master')
 
 @section('content')
-    <div class="error">
-        <div class="error-code"><i class="fa fa-podcast" aria-hidden="true"></i></div>
-        <h3 class="text-uppercase">@lang('core.error.request-failed.title')</h3>
-        <p class="text-muted m-t-30 m-b-30">
-            @lang('core.error.request-failed.text')
-        </p>
+    <div class="grid-main container grid-lg">
+        <div class="columns">
+            <div class="column col-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="panel panel-auto">
+                    <div class="panel-header text-center bg-error">
+                        <div class="panel-title err h1">4<i class="fas fa-meh"></i>4</div>
+                    </div>
+                    <div class="panel-body bg-dark">
+                        <div class="panel-header text-center">
+                            <div class="panel-title h5 mt-10">@lang('core.error.request-failed.title')</div>
+                            <div class="panel-subtitle">@lang('core.error.request-failed.text')</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    @include('layouts.partials._footer')
 @endsection

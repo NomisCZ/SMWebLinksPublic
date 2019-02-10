@@ -24,6 +24,10 @@ $app = new Laravel\Lumen\Application(
 );
 
 $app->configure('app');
+$app->configure('session');
+$app->configure('database');
+$app->configure('cache');
+$app->configure('steam-auth');
 $app->withFacades();
 
 /*
@@ -47,6 +51,12 @@ $app->singleton(
     App\Console\Kernel::class
 );
 
+$app->singleton('cookie', function () use ($app) {
+    return $app->loadComponent('session', 'Illuminate\Cookie\CookieServiceProvider', 'cookie');
+});
+
+$app->bind('Illuminate\Contracts\Cookie\QueueingFactory', 'cookie');
+
 /*
 |--------------------------------------------------------------------------
 | Register Middleware
@@ -57,6 +67,11 @@ $app->singleton(
 | route or middleware that'll be assigned to some specific routes.
 |
 */
+
+$app->middleware([
+    'Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse'
+]);
+
 
 $app->routeMiddleware([
     'throttle' => App\Http\Middleware\ThrottleRequests::class,
@@ -73,8 +88,8 @@ $app->routeMiddleware([
 | totally optional, so you are not required to uncomment this line.
 |
 */
-
-class_alias('Illuminate\Support\Facades\Request', 'Request');
+$app->register(Illuminate\Redis\RedisServiceProvider::class);
+$app->register(Invisnik\LaravelSteamAuth\SteamServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------
@@ -87,7 +102,9 @@ class_alias('Illuminate\Support\Facades\Request', 'Request');
 |
 */
 
-$app->group(['namespace' => 'App\Http\Controllers'], function ($app) {
+$app->router->group([
+    'namespace' => 'App\Http\Controllers',
+], function ($router) {
     require __DIR__.'/../routes/web.php';
 });
 

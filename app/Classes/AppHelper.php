@@ -5,8 +5,8 @@ if (!function_exists('urlGenerator')) {
     /**
      * @return \Laravel\Lumen\Routing\UrlGenerator
      */
-    function urlGenerator() {
-
+    function urlGenerator()
+    {
         return new \Laravel\Lumen\Routing\UrlGenerator(app());
     }
 }
@@ -19,7 +19,11 @@ if (!function_exists('asset')) {
      *
      * @return string
      */
-    function asset($path, $secured = true) {
+    function asset($path, $secured = true)
+    {
+        if (env('APP_DEBUG')) {
+            $secured = false;
+        }
 
         return urlGenerator()->asset('assets/'.$path, $secured);
     }
@@ -32,24 +36,22 @@ if (!function_exists('isValidURL')) {
      * @param $url
      * @return bool
      */
-    function isValidURL($url) {
-
+    function isValidURL($url)
+    {
         try {
 
             $exists = true;
             $headers = get_headers($url);
 
             if ($headers === false) {
-
                 return false;
             }
 
-            $invalidHeaders = array('404', '403', '500');
+            $invalidHeaders = ['404', '403', '500'];
 
-            foreach($invalidHeaders as $header) {
+            foreach ($invalidHeaders as $header) {
 
-                if(strstr($headers[0], $header)) {
-
+                if (strstr($headers[0], $header)) {
                     $exists = false;
                     break;
                 }
@@ -58,10 +60,7 @@ if (!function_exists('isValidURL')) {
             return $exists;
 
         } catch (Exception $e) {
-
             return false;
         }
     }
 }
-
-

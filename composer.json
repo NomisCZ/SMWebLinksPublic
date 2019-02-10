@@ -5,9 +5,13 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": ">=5.6.4",
-        "laravel/lumen-framework": "5.4.*",
-        "vlucas/phpdotenv": "~2.2"
+        "php": ">=7.1",
+        "laravel/lumen-framework": "5.7.*",
+        "vlucas/phpdotenv": "~2.2",
+        "invisnik/laravel-steam-auth": "3.*",
+        "illuminate/cookie": "^5.7",
+        "predis/predis": "^1.1",
+        "illuminate/redis": "^5.7"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
