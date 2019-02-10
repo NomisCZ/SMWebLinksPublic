@@ -119,7 +119,7 @@ class WebController extends Controller
 
         if (!isValidURL($cachedData->url)) {
 
-            return view('error.not-available', ['url' => $cachedData->url]);
+            return view('errors.not-available', ['url' => $cachedData->url]);
         }
 
         return redirect($cachedData->url);
@@ -147,12 +147,12 @@ class WebController extends Controller
 
         if ($this->requestData['clientIp'] !== $cachedData->playerIp) {
 
-            return view('redirect-internal', ['url' => route('error.failed')]);
+            return view('redirect-internal', ['url' => route('errors.failed')]);
         }
 
         if (!isValidURL($cachedData->url)) {
 
-            return view('redirect-internal', ['url' => route('error.not-available', ['url' => $cachedData->url])]);
+            return view('redirect-internal', ['url' => route('errors.not-available', ['url' => $cachedData->url])]);
         }
 
         return view('redirect', ['requestData' => $cachedData]);
